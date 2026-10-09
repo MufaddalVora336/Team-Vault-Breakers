@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Services — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Citizen Services Portal</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link active">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link">Officer Login</a></li>
+      <li><a href="appointment.html" class="nav-link">Appointments</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- Page Title Header -->
+    <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Virtual Queue Token</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Issue a virtual token remotely and track your position live.</p>
+      </div>
+      <div>
+        <span class="badge badge-waiting">Connected to Jan Seva Kendra</span>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: BOOKING & DOCUMENT READINESS    -->
+    <!-- ========================================== -->
+    <section id="bookingSection">
+      <div class="card" style="max-width: 680px; margin: 0 auto;">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Get a Queue Token</h2>
+            <p class="card-subtitle">Complete office selection and document verification</p>
+          </div>
+        </div>
+
+        <form id="tokenRequestForm" onsubmit="return false;">
+          <!-- Select Office -->
+          <div class="form-group">
+            <label class="form-label" for="citizenOfficeSelect">
+              Select Office
+            </label>
+            <select id="citizenOfficeSelect" class="form-control">
+              <option value="Rajkot District Service Center" selected>Rajkot District Service Center (Jan Seva Kendra)</option>
+              <option value="Ahmedabad Civic Center (East Zone)">Ahmedabad Civic Center (East Zone)</option>
+              <option value="Surat Jan Seva Kendra">Surat Jan Seva Kendra</option>
+              <option value="Vadodara Collectorate Office">Vadodara Collectorate Office</option>
+            </select>
+          </div>
+
+          <!-- Select Service -->
+          <div class="form-group">
+            <label class="form-label" for="citizenServiceSelect">
+              Select Service
+            </label>
+            <select id="citizenServiceSelect" class="form-control">
+              <option value="Income Certificate" selected>Income Certificate (Aavak no Dakhlo)</option>
+              <option value="Residence Certificate">Residence / Domicile Certificate</option>
+              <option value="Birth Certificate">Birth Certificate Registration</option>
+              <option value="Caste Certificate">Caste / Category Certificate</option>
+              <option value="Land Records & RoR (7/12)">Land Records &amp; RoR (7/12 / 8-A)</option>
+            </select>
+          </div>
+
+          <!-- Smart Service Readiness -->
+          <div class="readiness-card">
+            <div class="readiness-header">
+              <div>
+                <strong style="color: var(--text-main); font-size: 0.88rem;">Document Readiness Checklist</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem;">
+                  Confirm that you have these original documents ready for inspection
+                </div>
+              </div>
+              <span id="readinessScoreBadge" class="readiness-score-badge">Readiness Score: 100%</span>
+            </div>
+
+            <ul id="readinessDocList" class="doc-checklist">
+              <!-- Dynamically populated by citizen.js -->
+            </ul>
+          </div>
+
+          <!-- Mobile Number -->
+          <div class="form-group" style="margin-top: 1.25rem;">
+            <label class="form-label" for="citizenMobile">
+              Mobile Number
+              <span class="hint">(For Firebase SMS OTP Verification)</span>
+            </label>
+            <div class="phone-input-group">
+              <div class="country-code-badge" title="India (+91)">
+                <span>🇮🇳</span>
+                <span>+91</span>
+              </div>
+              <input 
+                type="tel" 
+                id="citizenMobile" 
+                class="form-control" 
+                placeholder="10-digit mobile number"
+                value="9876543210"
+                maxlength="10"
+                pattern="[6-9][0-9]{9}"
+                inputmode="numeric"
+              >
+            </div>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.35rem;">
+              Enter 10-digit Indian mobile number (without 0 or +91).
+            </div>
+          </div>
+
+          <!-- Queue Protection Note -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; margin-bottom: 1.25rem; font-size: 0.78rem; color: var(--text-muted);">
+            <strong style="color: var(--blue-700);">Queue Protection:</strong> One active token per citizen service. Duplicate requests for the same service are blocked to maintain queue integrity.
+          </div>
+
+          <!-- Submit Button -->
+          <button type="button" id="btnGetToken" class="btn btn-primary btn-lg" style="width: 100%;">
+            Verify Mobile &amp; Get Token
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: LIVE CITIZEN TOKEN DASHBOARD     -->
+    <!-- ========================================== -->
+    <section id="tokenDashboardSection" style="display: none; max-width: 720px; margin: 0 auto;">
+      
+      <!-- Token Card -->
+      <div class="token-hero-card">
+        <div class="token-hero-badge">
+          <span>Active Queue Token</span>
+        </div>
+
+        <div class="token-big-id" id="myTokenId">A-44</div>
+
+        <div class="token-meta-chips">
+          <span class="meta-chip">Office: <strong id="myOfficeBadge">Rajkot District Service Center</strong></span>
+          <span class="meta-chip">Service: <strong id="myServiceBadge">Income Certificate</strong></span>
+          <span id="myStatusBadge" class="badge badge-waiting">Waiting</span>
+        </div>
+
+        <!-- 4 Key Metrics -->
+        <div class="token-metrics-row">
+          <div class="metric-box">
+            <div class="metric-label">People Ahead</div>
+            <div class="metric-value highlight-cyan" id="metricPeopleAhead">3</div>
+          </div>
+
+          <div class="metric-box">
+            <div class="metric-label">Estimated Wait</div>
+            <div class="metric-value highlight-amber" id="metricWaitTime">15 min</div>
+          </div>
+
+          <div class="metric-box">
+            <div class="metric-label">Current Serving</div>
+            <div class="metric-value highlight-green" id="metricCurrentServing">A-40</div>
+          </div>
+
+          <div class="metric-box">
+            <div class="metric-label">Counter</div>
+            <div class="metric-value" style="font-size: 1.15rem; color: var(--blue-700);" id="metricTurnStatus">Counter 2</div>
+          </div>
+        </div>
+
+        <!-- Recommended Arrival Window -->
+        <div class="arrival-window-card">
+          <div>
+            <div class="arrival-tag">Recommended Arrival</div>
+            <div class="arrival-time-range" id="arrivalWindowText">
+              3:45 PM – 3:55 PM
+            </div>
+            <div class="arrival-desc">
+              Arrive at the Kendra during this window to be on time for your counter call.
+            </div>
+          </div>
+          <div>
+            <span class="badge badge-online">Live ETA</span>
+          </div>
+        </div>
+
+        <!-- Queue Progress Pipeline -->
+        <div class="queue-progress-container">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; text-align: left;">
+            Queue Sequence
+          </div>
+          <div class="pipeline-track" id="pipelineTrack">
+            <!-- Dynamically populated by citizen.js -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap;">
+          <button id="btnCitizenSimulate" class="btn btn-secondary btn-sm">
+            Simulate Queue Advance
+          </button>
+          <button id="btnViewPass" class="btn btn-secondary btn-sm">
+            View Digital Pass
+          </button>
+          <button id="btnCancelToken" class="btn btn-danger btn-sm">
+            Cancel Token
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: FIREBASE PHONE OTP VERIFICATION     -->
+  <!-- ========================================== -->
+  <div id="otpModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>📱</span>
+          <span>Mobile Verification</span>
+        </h3>
+        <button class="modal-close" id="btnCancelOtp">&times;</button>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.65rem;">
+        Enter the 6-digit verification code sent via SMS to <strong id="otpTargetPhone" style="color: var(--text-main);">+91 98765 43210</strong>.
+      </p>
+
+      <div id="otpStatusBanner" class="otp-status-banner"></div>
+
+      <!-- Firebase reCAPTCHA Invisible Container -->
+      <div id="recaptcha-container"></div>
+
+      <div class="otp-container">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric" autocomplete="one-time-code">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+        <input type="text" maxlength="1" class="otp-digit" inputmode="numeric">
+      </div>
+
+      <div class="otp-resend-row">
+        <span id="resendCountdownText">Resend SMS code in <strong id="resendTimer">30</strong>s</span>
+        <button type="button" id="btnResendOtp" class="btn btn-secondary btn-sm" disabled style="padding: 0.25rem 0.65rem; font-size: 0.78rem;">
+          Resend OTP
+        </button>
+      </div>
+
+      <div style="margin-top: 0.85rem; padding: 0.55rem 0.75rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 0.75rem; color: #166534; text-align: left; line-height: 1.4;">
+        <strong>Firebase Auth Support:</strong> Verified via real Indian SMS (+91) or Firebase Console test numbers (e.g. <code>+91 9876543210</code> &rarr; code <code>123456</code>).
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-top: 1.25rem;">
+        <button type="button" id="btnCancelOtpModal" class="btn btn-secondary" style="flex: 1;">
+          Cancel
+        </button>
+        <button type="button" id="btnVerifyOtp" class="btn btn-primary" style="flex: 1.6;">
+          Verify &amp; Get Token
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: DIGITAL TOKEN PASS                  -->
+  <!-- ========================================== -->
+  <div id="passModal" class="modal-overlay">
+    <div class="modal-content" style="text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">Citizen Digital Pass</h3>
+        <button class="modal-close" id="btnClosePass">&times;</button>
+      </div>
+
+      <div style="background: #fff; padding: 1rem; border-radius: 6px; display: inline-block; margin: 0.75rem 0;">
+        <svg width="130" height="130" viewBox="0 0 100 100" style="display: block;">
+          <rect width="100" height="100" fill="#ffffff"/>
+          <rect x="10" y="10" width="25" height="25" fill="#0b1120"/>
+          <rect x="15" y="15" width="15" height="15" fill="#ffffff"/>
+          <rect x="18" y="18" width="9" height="9" fill="#0b1120"/>
+          
+          <rect x="65" y="10" width="25" height="25" fill="#0b1120"/>
+          <rect x="70" y="15" width="15" height="15" fill="#ffffff"/>
+          <rect x="73" y="18" width="9" height="9" fill="#0b1120"/>
+
+          <rect x="10" y="65" width="25" height="25" fill="#0b1120"/>
+          <rect x="15" y="70" width="15" height="15" fill="#ffffff"/>
+          <rect x="18" y="73" width="9" height="9" fill="#0b1120"/>
+
+          <rect x="42" y="15" width="8" height="8" fill="#0b1120"/>
+          <rect x="52" y="25" width="6" height="6" fill="#0b1120"/>
+          <rect x="42" y="42" width="16" height="16" fill="#0b1120"/>
+          <rect x="65" y="45" width="8" height="15" fill="#0b1120"/>
+          <rect x="25" y="45" width="12" height="8" fill="#0b1120"/>
+          <rect x="45" y="65" width="10" height="10" fill="#0b1120"/>
+          <rect x="65" y="70" width="20" height="8" fill="#0b1120"/>
+          <rect x="75" y="82" width="10" height="8" fill="#0b1120"/>
+        </svg>
+      </div>
+
+      <div style="font-size: 2.25rem; font-weight: 900; color: var(--blue-800);" id="passTokenId">A-44</div>
+      <div style="font-size: 0.9rem; font-weight: 700; color: var(--blue-700); margin-top: 0.15rem;" id="passService">Income Certificate</div>
+      <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;" id="passOffice">Rajkot District Service Center</div>
+      
+      <div style="margin-top: 1rem; font-size: 0.8rem; background: var(--bg-surface); padding: 0.65rem 0.85rem; border-radius: 6px; border: 1px solid var(--border-subtle); text-align: left;">
+        <div><strong>Mobile:</strong> <span id="passMobile">******3210</span></div>
+        <div style="margin-top: 0.25rem;"><strong>Recommended Window:</strong> <span id="passArrival" style="color: var(--blue-700); font-weight: 600;">3:45 PM – 3:55 PM</span></div>
+      </div>
+
+      <button class="btn btn-secondary" onclick="document.getElementById('passModal').classList.remove('active')" style="width: 100%; margin-top: 1rem;">
+        Close Pass
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div><strong>QueueLess</strong> &mdash; Citizen Virtual Queue Portal</div>
+    <div style="margin-top: 0.25rem; color: var(--text-dim);">
+      Government District Service Center System
+    </div>
+  </footer>
+
+  <!-- Firebase Web SDK (Loaded from npm node_modules with CDN fallback) -->
+  <script src="/node_modules/firebase/firebase-app-compat.js" onerror="this.onerror=null;this.src='https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js';"></script>
+  <script src="/node_modules/firebase/firebase-auth-compat.js" onerror="this.onerror=null;this.src='https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js';"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <script src="js/queue.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/citizen.js"></script>
+</body>
+</html>

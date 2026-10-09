@@ -1,0 +1,112 @@
+{
+  "currentServing": null,
+  "tokens": [],
+  "completedTokens": [
+    {
+      "id": "A-46",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Citizen",
+      "mobile": "9876543210",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T17:41:30.305Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:41:46.979Z",
+      "completedAt": "2026-10-09T17:41:57.456Z"
+    },
+    {
+      "id": "A-45",
+      "type": "ONLINE",
+      "service": "Caste Certificate",
+      "office": "Vadodara Collectorate Office",
+      "customerName": "Citizen",
+      "mobile": "9876543210",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T17:25:49.650Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:40:00.779Z",
+      "completedAt": "2026-10-09T17:40:03.568Z"
+    },
+    {
+      "id": "A-44",
+      "type": "ONLINE",
+      "service": "Birth Certificate",
+      "office": "Ahmedabad Civic Center (East Zone)",
+      "customerName": "Citizen",
+      "mobile": "9876543210",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T17:24:37.147Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:25:00.887Z",
+      "completedAt": "2026-10-09T17:25:02.309Z"
+    },
+    {
+      "id": "A-43",
+      "type": "ONLINE",
+      "service": "Birth Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Neha Gupta",
+      "mobile": "9845678901",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T16:34:01.785Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:24:59.408Z",
+      "completedAt": "2026-10-09T17:25:00.232Z"
+    },
+    {
+      "id": "A-42",
+      "type": "WALK-IN",
+      "service": "Residence Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Suresh Mehta",
+      "mobile": "9834567890",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T16:29:01.785Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:24:58.441Z",
+      "completedAt": "2026-10-09T17:24:58.886Z"
+    },
+    {
+      "id": "A-41",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Amit Verma",
+      "mobile": "9823456789",
+      "status": "COMPLETED",
+      "createdAt": "2026-10-09T16:24:01.784Z",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T17:24:56.826Z",
+      "completedAt": "2026-10-09T17:24:57.939Z"
+    },
+    {
+      "id": "A-40",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Priya Sharma",
+      "mobile": "9812345678",
+      "status": "COMPLETED",
+      "counter": "Counter 2",
+      "calledAt": "2026-10-09T16:36:01.784Z",
+      "completedAt": "2026-10-09T17:24:56.251Z"
+    },
+    {
+      "id": "A-38",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "status": "COMPLETED"
+    },
+    {
+      "id": "A-39",
+      "type": "WALK-IN",
+      "service": "Caste Certificate",
+      "status": "COMPLETED"
+    }
+  ],
+  "nextTokenNum": 47,
+  "completedCount": 31,
+  "walkinCount": 1,
+  "soundEnabled": true
+}

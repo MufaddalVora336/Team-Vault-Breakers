@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QueueLess — Dual-Screen Demo Runner</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      overflow-y: hidden;
+      height: 100vh;
+    }
+    .demo-topbar {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      z-index: 100;
+    }
+    .flow-steps {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+    }
+    .flow-step-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-xs);
+      color: #cbd5e1;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .flow-step-badge.highlight {
+      background: #1d4ed8;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation & Demo Control Toolbar -->
+  <div class="demo-topbar">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <a href="index.html" class="nav-brand" style="text-decoration: none;">
+        <div class="brand-icon" style="width: 28px; height: 28px; font-size: 0.85rem;">QL</div>
+        <span class="brand-title" style="font-size: 1.05rem;">QueueLess</span>
+      </a>
+      <span class="badge badge-online" style="font-size: 0.72rem;">
+        Dual-Screen Live Sync
+      </span>
+    </div>
+
+    <!-- Presentation Checklist Guide -->
+    <div class="flow-steps" style="display: none; @media(min-width: 1050px){display: flex;}">
+      <div class="flow-step-badge highlight">1. Citizen: Get A-44</div>
+      <span style="color: var(--text-dim);">&rarr;</span>
+      <div class="flow-step-badge">2. Officer: Add Walk-in A-45</div>
+      <span style="color: var(--text-dim);">&rarr;</span>
+      <div class="flow-step-badge">3. Unified Queue Verified</div>
+      <span style="color: var(--text-dim);">&rarr;</span>
+      <div class="flow-step-badge">4. Officer: Call Next</div>
+      <span style="color: var(--text-dim);">&rarr;</span>
+      <div class="flow-step-badge">5. Citizen ETA Updates</div>
+    </div>
+
+    <!-- Action Toolbar -->
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <button id="btnQuickReset" class="btn btn-secondary btn-sm" title="Reset Demo Data">
+        ↺ Reset State
+      </button>
+      <button id="btnQuickSimulate" class="btn btn-primary btn-sm" title="Advance Queue">
+        ⚡ Advance Queue
+      </button>
+      <a href="index.html" class="btn btn-secondary btn-sm">
+        Exit Split
+      </a>
+    </div>
+  </div>
+
+  <!-- Dual-Screen Split View Layout -->
+  <div class="split-screen-container">
+    
+    <!-- Left Pane: Citizen View -->
+    <div class="split-frame-wrapper">
+      <div class="split-frame-header">
+        <div class="split-frame-title">
+          <span>📱</span>
+          <span>Citizen Portal</span>
+          <span class="badge badge-online" style="font-size: 0.7rem;">Applicant View</span>
+        </div>
+        <a href="citizen.html" target="_blank" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: none;">
+          Open in Tab &#8599;
+        </a>
+      </div>
+      <iframe src="citizen.html" id="citizenFrame" class="split-frame" title="Citizen Portal Frame"></iframe>
+    </div>
+
+    <!-- Right Pane: Officer Console -->
+    <div class="split-frame-wrapper">
+      <div class="split-frame-header">
+        <div class="split-frame-title">
+          <span>🏢</span>
+          <span>Officer Console</span>
+          <span class="badge badge-walkin" style="font-size: 0.7rem;">Desk View</span>
+        </div>
+        <a href="officer.html" target="_blank" style="font-size: 0.75rem; color: var(--text-muted); text-decoration: none;">
+          Open in Tab &#8599;
+        </a>
+      </div>
+      <iframe src="officer.html" id="officerFrame" class="split-frame" title="Officer Console Frame"></iframe>
+    </div>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/queue.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const citizenFrame = document.getElementById('citizenFrame');
+    const officerFrame = document.getElementById('officerFrame');
+    const btnQuickReset = document.getElementById('btnQuickReset');
+    const btnQuickSimulate = document.getElementById('btnQuickSimulate');
+
+    function refreshFrames() {
+      try {
+        if (citizenFrame && citizenFrame.contentWindow) citizenFrame.contentWindow.location.reload();
+        if (officerFrame && officerFrame.contentWindow) officerFrame.contentWindow.location.reload();
+      } catch (e) {}
+    }
+
+    if (btnQuickReset) {
+      btnQuickReset.addEventListener('click', async () => {
+        await QueueEngine.resetDemoData();
+        showToast('Demo data reset to clean initial state.', 'info');
+        refreshFrames();
+      });
+    }
+
+    if (btnQuickSimulate) {
+      btnQuickSimulate.addEventListener('click', async () => {
+        try {
+          const next = await QueueEngine.simulateQueueUpdate();
+          if (next) {
+            showToast(`Called Token ${next.id} to Counter 2`, 'success');
+          } else {
+            showToast('Completed current customer.', 'info');
+          }
+        } catch (err) {
+          showToast(err.message, 'warning');
+        }
+      });
+    }
+
+    window.addEventListener('queueless:updated', () => {
+      // Both iframes automatically respond via storage events
+    });
+  </script>
+</body>
+</html>

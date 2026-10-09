@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Officer Console — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Officer Administrative Console</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link active">Officer Login</a></li>
+      <li><a href="appointment.html" class="nav-link">Appointments</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- Top Admin Bar -->
+    <div style="margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <h1 style="font-size: 1.45rem; font-weight: 800; color: var(--text-main);">Counter 2 &mdash; Desk Management</h1>
+          <span class="badge badge-online">Revenue Services</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.15rem;">
+          Rajkot District Service Center &bull; Jan Seva Kendra Administrative Portal
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+        <button id="btnOpenWalkinModal" class="btn btn-warning btn-sm">
+          + Add Walk-in
+        </button>
+        <button id="btnSimulateOfficer" class="btn btn-secondary btn-sm">
+          Simulate Step
+        </button>
+        <button id="btnResetDemo" class="btn btn-secondary btn-sm" title="Reset Demo Data">
+          ↺ Reset Demo
+        </button>
+      </div>
+    </div>
+
+    <!-- Small Statistic Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Waiting</div>
+          <div class="stat-value" id="statWaiting">3</div>
+        </div>
+        <div class="stat-icon-wrapper">⏳</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Serving</div>
+          <div class="stat-value" id="statServing">1</div>
+        </div>
+        <div class="stat-icon-wrapper">👤</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Completed Today</div>
+          <div class="stat-value" id="statCompleted">24</div>
+        </div>
+        <div class="stat-icon-wrapper">✓</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Walk-ins</div>
+          <div class="stat-value" id="statWalkins">1</div>
+        </div>
+        <div class="stat-icon-wrapper">🏢</div>
+      </div>
+    </div>
+
+    <!-- Active Serving Desk Banner -->
+    <div class="serving-banner">
+      <div>
+        <div class="serving-badge">
+          <span class="pulse-dot"></span>
+          <span>Active Turn at Desk</span>
+        </div>
+        <div class="serving-token-number" id="servingTokenNumber">A-40</div>
+        <div class="serving-counter-name" id="servingCounterName">Counter 2</div>
+        <div class="serving-desc" id="servingDetails">
+          Priya Sharma &bull; Income Certificate &bull; Online Citizen
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+        <button id="btnCallNext" class="btn btn-primary btn-lg">
+          CALL NEXT
+        </button>
+        <button id="btnCompleteCurrent" class="btn btn-accent btn-lg">
+          Complete
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Queue Real Table -->
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Live Unified Queue</h2>
+          <p class="card-subtitle">Unified priority sequence for both online citizens and offline walk-ins</p>
+        </div>
+        <div style="display: flex; gap: 0.4rem; font-size: 0.78rem;">
+          <span class="badge badge-online">Online</span>
+          <span class="badge badge-walkin">Walk-in</span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="queue-table">
+          <thead>
+            <tr>
+              <th>Token</th>
+              <th>Type</th>
+              <th>Citizen</th>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Wait</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="queueTableBody">
+            <!-- Dynamically populated by officer.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 0.85rem; font-size: 0.78rem; color: var(--text-dim); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <div>Unified queue updates live whenever citizens join online or officers register walk-ins.</div>
+        <div>Standard pace: <strong>5 min/token</strong></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ADD OFFLINE WALK-IN CITIZEN        -->
+  <!-- ========================================== -->
+  <div id="walkinModal" class="modal-overlay">
+    <div class="modal-content">
+      
+      <!-- Input Form -->
+      <div id="walkinFormContainer">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Walk-in Citizen</h3>
+          <button class="modal-close" id="btnCloseWalkinModal">&times;</button>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-bottom: 1rem;">
+          Issue a physical token for a walk-in visitor. The token seamlessly enters the unified priority line.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="walkinName">Customer Name</label>
+          <input 
+            type="text" 
+            id="walkinName" 
+            class="form-control" 
+            value="Rahul Patel"
+            placeholder="Citizen Name"
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="walkinMobile">Mobile Number</label>
+          <div class="phone-input-group">
+            <div class="country-code-badge" title="India (+91)">
+              <span>🇮🇳</span>
+              <span>+91</span>
+            </div>
+            <input 
+              type="tel" 
+              id="walkinMobile" 
+              class="form-control" 
+              value="9876543210"
+              placeholder="10-digit mobile"
+              maxlength="10"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="walkinService">Service</label>
+          <select id="walkinService" class="form-control">
+            <option value="Income Certificate" selected>Income Certificate</option>
+            <option value="Residence Certificate">Residence Certificate</option>
+            <option value="Birth Certificate">Birth Certificate</option>
+            <option value="Caste Certificate">Caste Certificate</option>
+            <option value="Land Records & RoR (7/12)">Land Records &amp; RoR (7/12)</option>
+          </select>
+        </div>
+
+        <button type="button" id="btnAddWalkin" class="btn btn-warning btn-lg" style="width: 100%; margin-top: 0.35rem;">
+          Add to Queue &amp; Issue Token
+        </button>
+      </div>
+
+      <!-- Token Slip Confirmation -->
+      <div id="walkinSlipContainer" style="display: none; text-align: center;">
+        <div style="font-size: 1rem; font-weight: 700; color: #15803d; margin-bottom: 0.25rem;">
+          Physical Token Issued
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;">
+          Hand this physical token slip to the walk-in citizen.
+        </p>
+
+        <div style="background: #fffdf5; border: 2px dashed #d97706; border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem;">
+          <div style="font-size: 0.75rem; font-weight: 700; color: #b45309; text-transform: uppercase;">
+            PHYSICAL TOKEN SLIP &bull; WALK-IN
+          </div>
+          <div style="font-size: 3rem; font-weight: 900; color: #0f172a; margin: 0.25rem 0;" id="slipTokenId">
+            A-45
+          </div>
+          <div style="font-size: 0.95rem; font-weight: 700; color: #1e293b;" id="slipCustomerName">
+            Rahul Patel
+          </div>
+          <div style="font-size: 0.82rem; color: #1d4ed8; margin-top: 0.15rem; font-weight: 600;" id="slipService">
+            Income Certificate
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem; border-top: 1px solid #fde68a; padding-top: 0.4rem;">
+            Counter 2 &bull; Rajkot District Service Center
+          </div>
+        </div>
+
+        <button type="button" id="btnPrintSlipDone" class="btn btn-primary" style="width: 100%;">
+          Done &amp; View Unified Queue
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div><strong>QueueLess</strong> &mdash; Officer Administration Console</div>
+    <div style="margin-top: 0.25rem; color: var(--text-dim);">
+      Jan Seva Kendra Administrative Portal
+    </div>
+  </footer>
+
+  <script src="js/queue.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/officer.js"></script>
+</body>
+</html>

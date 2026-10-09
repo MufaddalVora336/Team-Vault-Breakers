@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advance Appointments — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Citizen Services &amp; Appointments</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link">Officer Login</a></li>
+      <li><a href="appointment.html" class="nav-link active">Appointments</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- Top Header -->
+    <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.75rem;">
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main);">Book an Advance Appointment</h1>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.2rem;">
+        Reserve a scheduled time slot for an upcoming date to avoid same-day queue waiting.
+      </p>
+    </div>
+
+    <!-- Booking Form Card -->
+    <section id="aptBookingCard" class="card" style="max-width: 650px; margin: 0 auto;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Schedule an In-Person Visit</h2>
+          <p class="card-subtitle">Choose your district center, service, and preferred time window</p>
+        </div>
+      </div>
+
+      <form id="appointmentForm">
+        <div class="form-group">
+          <label class="form-label" for="aptOffice">Government Office</label>
+          <select id="aptOffice" class="form-control">
+            <option value="Rajkot District Service Center" selected>Rajkot District Service Center</option>
+            <option value="Ahmedabad Civic Center (East Zone)">Ahmedabad Civic Center (East Zone)</option>
+            <option value="Surat Jan Seva Kendra">Surat Jan Seva Kendra</option>
+            <option value="Vadodara Collectorate Office">Vadodara Collectorate Office</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aptService">Service</label>
+          <select id="aptService" class="form-control">
+            <option value="Income Certificate" selected>Income Certificate</option>
+            <option value="Residence Certificate">Residence Certificate</option>
+            <option value="Birth Certificate">Birth Certificate</option>
+            <option value="Caste Certificate">Caste Certificate</option>
+            <option value="Land Records & RoR (7/12)">Land Records &amp; RoR (7/12)</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="aptDate">Preferred Date</label>
+            <input type="date" id="aptDate" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="aptSlot">Time Window</label>
+            <select id="aptSlot" class="form-control">
+              <option value="09:30 AM – 10:00 AM">09:30 AM – 10:00 AM</option>
+              <option value="10:00 AM – 10:30 AM">10:00 AM – 10:30 AM</option>
+              <option value="10:30 AM – 11:00 AM" selected>10:30 AM – 11:00 AM</option>
+              <option value="11:30 AM – 12:00 PM">11:30 AM – 12:00 PM</option>
+              <option value="02:00 PM – 02:30 PM">02:00 PM – 02:30 PM</option>
+              <option value="03:30 PM – 04:00 PM">03:30 PM – 04:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aptName">Full Name</label>
+          <input type="text" id="aptName" class="form-control" placeholder="Applicant Name" value="Ramesh Chandra" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="aptMobile">Mobile Number</label>
+          <div class="phone-input-group">
+            <div class="country-code-badge" title="India (+91)">
+              <span>🇮🇳</span>
+              <span>+91</span>
+            </div>
+            <input type="tel" id="aptMobile" class="form-control" placeholder="10-digit mobile" value="9876543210" maxlength="10" required>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; margin-bottom: 1.25rem; font-size: 0.78rem; color: var(--text-muted);">
+          <strong style="color: var(--blue-700);">Appointment Check-In:</strong> Present your digital appointment pass or barcode at the front reception kiosk on arrival to proceed directly to the desk.
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+          Confirm Appointment Slot
+        </button>
+      </form>
+    </section>
+
+    <!-- Confirmation Pass (Initially Hidden) -->
+    <section id="aptPassCard" class="card" style="display: none; max-width: 550px; margin: 0 auto; text-align: center;">
+      <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.65rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 4px; color: #15803d; font-size: 0.78rem; font-weight: 700; margin-bottom: 1rem;">
+        <span>✓</span> APPOINTMENT CONFIRMED
+      </div>
+
+      <div style="font-size: 2.5rem; font-weight: 900; color: var(--blue-800); line-height: 1;" id="passAptId">
+        APT-8492
+      </div>
+
+      <div style="margin: 1.25rem 0; background: #fff; padding: 1rem; border-radius: 6px; display: inline-block;">
+        <svg width="180" height="60" viewBox="0 0 180 60">
+          <rect width="180" height="60" fill="#fff"/>
+          <rect x="10" y="5" width="5" height="50" fill="#0b1120"/>
+          <rect x="18" y="5" width="2" height="50" fill="#0b1120"/>
+          <rect x="23" y="5" width="6" height="50" fill="#0b1120"/>
+          <rect x="33" y="5" width="4" height="50" fill="#0b1120"/>
+          <rect x="40" y="5" width="8" height="50" fill="#0b1120"/>
+          <rect x="52" y="5" width="3" height="50" fill="#0b1120"/>
+          <rect x="58" y="5" width="6" height="50" fill="#0b1120"/>
+          <rect x="68" y="5" width="2" height="50" fill="#0b1120"/>
+          <rect x="74" y="5" width="7" height="50" fill="#0b1120"/>
+          <rect x="85" y="5" width="4" height="50" fill="#0b1120"/>
+          <rect x="93" y="5" width="3" height="50" fill="#0b1120"/>
+          <rect x="100" y="5" width="9" height="50" fill="#0b1120"/>
+          <rect x="113" y="5" width="3" height="50" fill="#0b1120"/>
+          <rect x="120" y="5" width="6" height="50" fill="#0b1120"/>
+          <rect x="130" y="5" width="4" height="50" fill="#0b1120"/>
+          <rect x="138" y="5" width="8" height="50" fill="#0b1120"/>
+          <rect x="150" y="5" width="3" height="50" fill="#0b1120"/>
+          <rect x="157" y="5" width="6" height="50" fill="#0b1120"/>
+          <rect x="166" y="5" width="4" height="50" fill="#0b1120"/>
+        </svg>
+      </div>
+
+      <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 1rem; text-align: left; font-size: 0.85rem; margin-bottom: 1.25rem;">
+        <div style="margin-bottom: 0.35rem;"><strong>Office:</strong> <span id="passAptOffice">Rajkot District Service Center</span></div>
+        <div style="margin-bottom: 0.35rem;"><strong>Service:</strong> <span id="passAptService" style="color: var(--blue-700); font-weight: 600;">Income Certificate</span></div>
+        <div style="margin-bottom: 0.35rem;"><strong>Slot:</strong> <span id="passAptDateTime" style="font-weight: 700; color: var(--text-main);">Tomorrow &bull; 10:30 AM – 11:00 AM</span></div>
+        <div><strong>Applicant:</strong> <span id="passAptCitizen">Ramesh Chandra (******3210)</span></div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; justify-content: center;">
+        <button id="btnBookAnother" class="btn btn-secondary btn-sm">
+          Book Another
+        </button>
+        <a href="citizen.html" class="btn btn-primary btn-sm">
+          Go to Virtual Queue
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div><strong>QueueLess</strong> &mdash; Advance Appointment Services</div>
+    <div style="margin-top: 0.25rem; color: var(--text-dim);">
+      District Administrative Civic Center
+    </div>
+  </footer>
+
+  <script src="js/queue.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/appointment.js"></script>
+</body>
+</html>

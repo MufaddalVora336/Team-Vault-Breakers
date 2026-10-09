@@ -1,0 +1,24 @@
+{
+  "name": "queueless",
+  "version": "1.0.0",
+  "description": "PS-02: QueueLess — Virtual Queue & Appointment Management System for Government Offices",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "virtual-queue",
+    "civic-tech",
+    "hackathon",
+    "government-services",
+    "appointment-management"
+  ],
+  "author": "Hackathon Team",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^18.0.6",
+    "firebase": "^13.0.0",
+    "firebase-admin": "^14.5.0",
+    "mongodb": "^7.7.0"
+  }
+}
