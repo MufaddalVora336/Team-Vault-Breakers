@@ -199,6 +199,17 @@ const QueueEngine = (function () {
     return `Arrive between ${fmt(startTime)} – ${fmt(endTime)}`;
   }
 
+  function getAuthHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    try {
+      const token = localStorage.getItem('queueless_auth_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    } catch (e) {}
+    return headers;
+  }
+
   return {
     getState() {
       return state;
@@ -206,6 +217,30 @@ const QueueEngine = (function () {
 
     async fetchState() {
       return await fetchState();
+    },
+
+    setAuthToken(token) {
+      try {
+        if (token) {
+          localStorage.setItem('queueless_auth_token', token);
+        } else {
+          localStorage.removeItem('queueless_auth_token');
+        }
+      } catch (e) {}
+    },
+
+    getAuthToken() {
+      try {
+        return localStorage.getItem('queueless_auth_token');
+      } catch (e) {
+        return null;
+      }
+    },
+
+    clearAuthToken() {
+      try {
+        localStorage.removeItem('queueless_auth_token');
+      } catch (e) {}
     },
 
     setActiveCitizenTokenId(id) {
@@ -265,7 +300,7 @@ const QueueEngine = (function () {
 
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload)
       });
 
@@ -287,7 +322,7 @@ const QueueEngine = (function () {
     async callNext(counter = 'Counter 2', tokenId = null) {
       const res = await fetch('/api/queue/call-next', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ counter, tokenId })
       });
 
@@ -305,7 +340,7 @@ const QueueEngine = (function () {
     async completeCurrent() {
       const res = await fetch('/api/queue/complete', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: getAuthHeaders()
       });
 
       const data = await res.json();
@@ -321,7 +356,7 @@ const QueueEngine = (function () {
     async markNoShow(tokenId) {
       const res = await fetch('/api/queue/noshow', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ tokenId })
       });
 
@@ -338,7 +373,7 @@ const QueueEngine = (function () {
     async cancelToken(tokenId) {
       const res = await fetch('/api/queue/cancel', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ tokenId })
       });
 

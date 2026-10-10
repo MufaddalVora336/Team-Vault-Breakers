@@ -1,0 +1,397 @@
+[
+  {
+    "id": "LOG-197247",
+    "timestamp": "2026-10-10T04:39:57.247Z",
+    "action": "DEMO_SEEDED",
+    "actor": {
+      "name": "Demo Runner",
+      "role": "admin"
+    },
+    "details": {
+      "office": "Rajkot District Service Center",
+      "count": 4
+    }
+  },
+  {
+    "id": "LOG-197247",
+    "timestamp": "2026-10-10T04:39:57.247Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Ramesh Dave",
+      "role": "citizen"
+    },
+    "details": {
+      "tokenId": "A-52",
+      "type": "ONLINE",
+      "service": "Caste Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-197246",
+    "timestamp": "2026-10-10T04:39:57.246Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Neha Gupta",
+      "role": "citizen"
+    },
+    "details": {
+      "tokenId": "A-51",
+      "type": "ONLINE",
+      "service": "Birth Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-197245",
+    "timestamp": "2026-10-10T04:39:57.245Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Suresh Mehta",
+      "role": "officer"
+    },
+    "details": {
+      "tokenId": "A-50",
+      "type": "WALK-IN",
+      "service": "Residence Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-197245",
+    "timestamp": "2026-10-10T04:39:57.245Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Amit Verma",
+      "role": "citizen"
+    },
+    "details": {
+      "tokenId": "A-49",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-197242",
+    "timestamp": "2026-10-10T04:39:57.242Z",
+    "action": "OFFICE_ADDED",
+    "actor": {
+      "name": "Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "officeId": "OFF-7242",
+      "name": "Bhavnagar District Seva Kendra"
+    }
+  },
+  {
+    "id": "LOG-197238",
+    "timestamp": "2026-10-10T04:39:57.238Z",
+    "action": "TOKEN_COMPLETED",
+    "actor": {
+      "name": "Officer",
+      "role": "officer"
+    },
+    "details": {
+      "tokenId": "A-48",
+      "counter": "Counter 2"
+    }
+  },
+  {
+    "id": "LOG-197236",
+    "timestamp": "2026-10-10T04:39:57.236Z",
+    "action": "TOKEN_CALLED",
+    "actor": {
+      "name": "Officer",
+      "role": "officer"
+    },
+    "details": {
+      "tokenId": "A-48",
+      "counter": "Counter 2",
+      "service": "Residence Certificate"
+    }
+  },
+  {
+    "id": "LOG-197234",
+    "timestamp": "2026-10-10T04:39:57.234Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "username": "officer_test_1791607195461",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195603",
+    "timestamp": "2026-10-10T04:39:55.603Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Ananya Desai",
+      "role": "citizen"
+    },
+    "details": {
+      "tokenId": "A-48",
+      "type": "ONLINE",
+      "service": "Residence Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195600",
+    "timestamp": "2026-10-10T04:39:55.600Z",
+    "action": "STAFF_STATUS_CHANGED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-195490",
+      "newStatus": "APPROVED"
+    }
+  },
+  {
+    "id": "LOG-195566",
+    "timestamp": "2026-10-10T04:39:55.566Z",
+    "action": "STAFF_STATUS_CHANGED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-195490",
+      "newStatus": "INACTIVE"
+    }
+  },
+  {
+    "id": "LOG-195563",
+    "timestamp": "2026-10-10T04:39:55.563Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Nirav Patel",
+      "role": "officer"
+    },
+    "details": {
+      "tokenId": "A-47",
+      "type": "WALK-IN",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195561",
+    "timestamp": "2026-10-10T04:39:55.561Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "username": "officer_test_1791607195461",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195527",
+    "timestamp": "2026-10-10T04:39:55.527Z",
+    "action": "STAFF_APPROVED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-195490",
+      "staffName": "Vikram Sarabhai",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195491",
+    "timestamp": "2026-10-10T04:39:55.491Z",
+    "action": "STAFF_REGISTERED",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "userId": "USR-195490",
+      "status": "PENDING",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-195459",
+    "timestamp": "2026-10-10T04:39:55.459Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "username": "admin",
+      "office": "All Offices"
+    }
+  },
+  {
+    "id": "LOG-139196",
+    "timestamp": "2026-10-10T04:38:59.196Z",
+    "action": "STAFF_STATUS_CHANGED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-139085",
+      "newStatus": "APPROVED"
+    }
+  },
+  {
+    "id": "LOG-139162",
+    "timestamp": "2026-10-10T04:38:59.162Z",
+    "action": "STAFF_STATUS_CHANGED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-139085",
+      "newStatus": "INACTIVE"
+    }
+  },
+  {
+    "id": "LOG-139159",
+    "timestamp": "2026-10-10T04:38:59.159Z",
+    "action": "TOKEN_CREATED",
+    "actor": {
+      "name": "Nirav Patel",
+      "role": "officer"
+    },
+    "details": {
+      "tokenId": "A-46",
+      "type": "WALK-IN",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-139157",
+    "timestamp": "2026-10-10T04:38:59.157Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "username": "officer_test_1791607139053",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-139123",
+    "timestamp": "2026-10-10T04:38:59.123Z",
+    "action": "STAFF_APPROVED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-139085",
+      "staffName": "Vikram Sarabhai",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-139086",
+    "timestamp": "2026-10-10T04:38:59.086Z",
+    "action": "STAFF_REGISTERED",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "userId": "USR-139085",
+      "status": "PENDING",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-139052",
+    "timestamp": "2026-10-10T04:38:59.052Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "username": "admin",
+      "office": "All Offices"
+    }
+  },
+  {
+    "id": "LOG-061836",
+    "timestamp": "2026-10-10T04:37:41.836Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "username": "officer_test_1791607061727",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-061800",
+    "timestamp": "2026-10-10T04:37:41.800Z",
+    "action": "STAFF_APPROVED",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "staffId": "USR-061761",
+      "staffName": "Vikram Sarabhai",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-061761",
+    "timestamp": "2026-10-10T04:37:41.761Z",
+    "action": "STAFF_REGISTERED",
+    "actor": {
+      "name": "Vikram Sarabhai",
+      "role": "officer"
+    },
+    "details": {
+      "userId": "USR-061761",
+      "status": "PENDING",
+      "office": "Rajkot District Service Center"
+    }
+  },
+  {
+    "id": "LOG-061726",
+    "timestamp": "2026-10-10T04:37:41.726Z",
+    "action": "STAFF_LOGIN",
+    "actor": {
+      "name": "System Administrator",
+      "role": "admin"
+    },
+    "details": {
+      "username": "admin",
+      "office": "All Offices"
+    }
+  },
+  {
+    "id": "LOG-001",
+    "timestamp": "2026-10-10T04:37:41.344Z",
+    "action": "SYSTEM_STARTUP",
+    "actor": {
+      "name": "System",
+      "role": "system"
+    },
+    "details": "QueueLess civic-tech server initialized."
+  }
+]

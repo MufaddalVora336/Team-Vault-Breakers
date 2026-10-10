@@ -1,45 +1,15 @@
 {
   "currentServing": null,
-  "tokens": [],
-  "completedTokens": [
+  "tokens": [
     {
-      "id": "A-46",
-      "type": "ONLINE",
-      "service": "Income Certificate",
+      "id": "A-42",
+      "type": "WALK-IN",
+      "service": "Residence Certificate",
       "office": "Rajkot District Service Center",
-      "customerName": "Citizen",
-      "mobile": "9876543210",
-      "status": "COMPLETED",
-      "createdAt": "2026-10-09T17:41:30.305Z",
-      "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:41:46.979Z",
-      "completedAt": "2026-10-09T17:41:57.456Z"
-    },
-    {
-      "id": "A-45",
-      "type": "ONLINE",
-      "service": "Caste Certificate",
-      "office": "Vadodara Collectorate Office",
-      "customerName": "Citizen",
-      "mobile": "9876543210",
-      "status": "COMPLETED",
-      "createdAt": "2026-10-09T17:25:49.650Z",
-      "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:40:00.779Z",
-      "completedAt": "2026-10-09T17:40:03.568Z"
-    },
-    {
-      "id": "A-44",
-      "type": "ONLINE",
-      "service": "Birth Certificate",
-      "office": "Ahmedabad Civic Center (East Zone)",
-      "customerName": "Citizen",
-      "mobile": "9876543210",
-      "status": "COMPLETED",
-      "createdAt": "2026-10-09T17:24:37.147Z",
-      "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:25:00.887Z",
-      "completedAt": "2026-10-09T17:25:02.309Z"
+      "customerName": "Suresh Mehta",
+      "mobile": "9834567890",
+      "status": "WAITING",
+      "createdAt": "2026-10-10T03:52:18.342Z"
     },
     {
       "id": "A-43",
@@ -48,24 +18,111 @@
       "office": "Rajkot District Service Center",
       "customerName": "Neha Gupta",
       "mobile": "9845678901",
-      "status": "COMPLETED",
-      "createdAt": "2026-10-09T16:34:01.785Z",
-      "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:24:59.408Z",
-      "completedAt": "2026-10-09T17:25:00.232Z"
+      "status": "WAITING",
+      "createdAt": "2026-10-10T03:57:18.342Z"
     },
     {
-      "id": "A-42",
+      "id": "A-44",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Citizen Mufaddal",
+      "mobile": "9876543210",
+      "status": "WAITING",
+      "createdAt": "2026-10-10T04:02:18.725Z"
+    },
+    {
+      "id": "A-45",
+      "type": "WALK-IN",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Rahul Patel",
+      "mobile": "9876500000",
+      "status": "WAITING",
+      "createdAt": "2026-10-10T04:02:18.728Z"
+    },
+    {
+      "id": "A-46",
+      "type": "WALK-IN",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Nirav Patel",
+      "mobile": "9876543210",
+      "status": "WAITING",
+      "isDemo": false,
+      "createdAt": "2026-10-10T04:38:59.159Z"
+    },
+    {
+      "id": "A-47",
+      "type": "WALK-IN",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Nirav Patel",
+      "mobile": "9876543210",
+      "status": "WAITING",
+      "isDemo": false,
+      "createdAt": "2026-10-10T04:39:55.563Z"
+    },
+    {
+      "id": "A-49",
+      "type": "ONLINE",
+      "service": "Income Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Amit Verma",
+      "mobile": "9823456789",
+      "status": "WAITING",
+      "isDemo": true,
+      "createdAt": "2026-10-10T04:39:57.244Z"
+    },
+    {
+      "id": "A-50",
       "type": "WALK-IN",
       "service": "Residence Certificate",
       "office": "Rajkot District Service Center",
       "customerName": "Suresh Mehta",
       "mobile": "9834567890",
+      "status": "WAITING",
+      "isDemo": true,
+      "createdAt": "2026-10-10T04:39:57.245Z"
+    },
+    {
+      "id": "A-51",
+      "type": "ONLINE",
+      "service": "Birth Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Neha Gupta",
+      "mobile": "9845678901",
+      "status": "WAITING",
+      "isDemo": true,
+      "createdAt": "2026-10-10T04:39:57.246Z"
+    },
+    {
+      "id": "A-52",
+      "type": "ONLINE",
+      "service": "Caste Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Ramesh Dave",
+      "mobile": "9856789012",
+      "status": "WAITING",
+      "isDemo": true,
+      "createdAt": "2026-10-10T04:39:57.246Z"
+    }
+  ],
+  "completedTokens": [
+    {
+      "id": "A-48",
+      "type": "ONLINE",
+      "service": "Residence Certificate",
+      "office": "Rajkot District Service Center",
+      "customerName": "Ananya Desai",
+      "mobile": "9876599999",
       "status": "COMPLETED",
-      "createdAt": "2026-10-09T16:29:01.785Z",
+      "isDemo": false,
+      "createdAt": "2026-10-10T04:39:55.603Z",
       "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:24:58.441Z",
-      "completedAt": "2026-10-09T17:24:58.886Z"
+      "calledAt": "2026-10-10T04:39:57.236Z",
+      "servedBy": "Officer",
+      "completedAt": "2026-10-10T04:39:57.238Z"
     },
     {
       "id": "A-41",
@@ -75,10 +132,10 @@
       "customerName": "Amit Verma",
       "mobile": "9823456789",
       "status": "COMPLETED",
-      "createdAt": "2026-10-09T16:24:01.784Z",
+      "createdAt": "2026-10-10T03:47:18.342Z",
       "counter": "Counter 2",
-      "calledAt": "2026-10-09T17:24:56.826Z",
-      "completedAt": "2026-10-09T17:24:57.939Z"
+      "calledAt": "2026-10-10T04:02:18.733Z",
+      "completedAt": "2026-10-10T04:02:18.735Z"
     },
     {
       "id": "A-40",
@@ -89,8 +146,8 @@
       "mobile": "9812345678",
       "status": "COMPLETED",
       "counter": "Counter 2",
-      "calledAt": "2026-10-09T16:36:01.784Z",
-      "completedAt": "2026-10-09T17:24:56.251Z"
+      "calledAt": "2026-10-10T03:59:18.342Z",
+      "completedAt": "2026-10-10T04:02:18.733Z"
     },
     {
       "id": "A-38",
@@ -105,8 +162,8 @@
       "status": "COMPLETED"
     }
   ],
-  "nextTokenNum": 47,
-  "completedCount": 31,
-  "walkinCount": 1,
+  "nextTokenNum": 53,
+  "completedCount": 27,
+  "walkinCount": 5,
   "soundEnabled": true
 }

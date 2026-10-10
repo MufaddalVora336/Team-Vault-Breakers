@@ -5,41 +5,41 @@
 
 const fs = require('fs');
 const path = require('path');
-let admin = null;
-let isFirebaseAdminInitialized = false;
+let firebaseAdminApp = null;
 let firebaseAuth = null;
+let isFirebaseAdminInitialized = false;
 
 function initFirebaseAdmin() {
-  if (isFirebaseAdminInitialized) return true;
+  if (isFirebaseAdminInitialized && firebaseAuth) return true;
 
   try {
-    const adminModule = require('firebase-admin');
+    const { initializeApp, getApps, cert } = require('firebase-admin/app');
+    const { getAuth } = require('firebase-admin/auth');
+
     const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH;
 
     if (serviceAccountPath) {
       const resolvedPath = path.resolve(process.cwd(), serviceAccountPath);
       if (fs.existsSync(resolvedPath)) {
         const serviceAccount = JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
-        adminModule.initializeApp({
-          credential: adminModule.credential.cert(serviceAccount)
-        });
-        admin = adminModule;
-        firebaseAuth = adminModule.auth();
+        firebaseAdminApp = getApps().length > 0
+          ? getApps()[0]
+          : initializeApp({ credential: cert(serviceAccount) });
+        firebaseAuth = getAuth(firebaseAdminApp);
         isFirebaseAdminInitialized = true;
         console.log('[FIREBASE ADMIN] Initialized with service account credentials.');
         return true;
       }
     }
 
-    // Alternatively initialize with project ID if running in Google Cloud or test mode
-    if (process.env.FIREBASE_PROJECT_ID) {
-      adminModule.initializeApp({
-        projectId: process.env.FIREBASE_PROJECT_ID
-      });
-      admin = adminModule;
-      firebaseAuth = adminModule.auth();
+    const projectId = cleanVal(process.env.FIREBASE_PROJECT_ID || process.env.projectId);
+    if (projectId) {
+      firebaseAdminApp = getApps().length > 0
+        ? getApps()[0]
+        : initializeApp({ projectId });
+      firebaseAuth = getAuth(firebaseAdminApp);
       isFirebaseAdminInitialized = true;
-      console.log(`[FIREBASE ADMIN] Initialized for project "${process.env.FIREBASE_PROJECT_ID}".`);
+      console.log(`[FIREBASE ADMIN] Initialized for project "${projectId}".`);
       return true;
     }
   } catch (err) {
@@ -128,7 +128,7 @@ async function verifyFirebasePhoneToken(idToken, expectedMobile) {
   const cleanExpected = String(expectedMobile || '').replace(/\D/g, '').slice(-10);
 
   // If Firebase Admin is available, use it
-  if (isFirebaseAdminInitialized && admin) {
+  if (isFirebaseAdminInitialized && firebaseAuth) {
     try {
       const decoded = await firebaseAuth.verifyIdToken(idToken);
       const phoneInToken = String(decoded.phone_number || '').replace(/\D/g, '').slice(-10);
@@ -146,12 +146,8 @@ async function verifyFirebasePhoneToken(idToken, expectedMobile) {
         uid: decoded.uid,
         phoneNumber: decoded.phone_number
       };
-    } catch (err) {
-      return {
-        valid: false,
-        error: 'INVALID_TOKEN',
-        message: `Firebase token verification failed: ${err.message}`
-      };
+    } catch (adminErr) {
+      console.warn(`[FIREBASE ADMIN] verifyIdToken check failed (${adminErr.message}), falling back to Identity Toolkit REST API...`);
     }
   }
 

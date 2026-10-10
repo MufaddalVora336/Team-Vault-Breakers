@@ -1,0 +1,84 @@
+{
+  "a8c3a3bc393697e8954900dd7ae700322dc3af44dc7d060cd365d3b893ac9418": {
+    "token": "a8c3a3bc393697e8954900dd7ae700322dc3af44dc7d060cd365d3b893ac9418",
+    "userId": "USR-ADMIN-01",
+    "username": "admin",
+    "name": "System Administrator",
+    "role": "admin",
+    "office": "All Offices",
+    "counter": "All Counters",
+    "createdAt": "2026-10-10T04:37:41.725Z",
+    "expiresAt": "2026-10-11T04:37:41.725Z"
+  },
+  "41f38bb315c1bf834d55680c4dd5fafc2ec5af15f1874e6fc1dbc2cc732ccf80": {
+    "token": "41f38bb315c1bf834d55680c4dd5fafc2ec5af15f1874e6fc1dbc2cc732ccf80",
+    "userId": "USR-061761",
+    "username": "officer_test_1791607061727",
+    "name": "Vikram Sarabhai",
+    "role": "officer",
+    "office": "Rajkot District Service Center",
+    "counter": "Counter 2",
+    "createdAt": "2026-10-10T04:37:41.836Z",
+    "expiresAt": "2026-10-11T04:37:41.836Z"
+  },
+  "0ad5dfa919719e04d5ed85f1dcb36e87c213fd083891dadabf62925ba605b80b": {
+    "token": "0ad5dfa919719e04d5ed85f1dcb36e87c213fd083891dadabf62925ba605b80b",
+    "userId": "USR-ADMIN-01",
+    "username": "admin",
+    "name": "System Administrator",
+    "role": "admin",
+    "status": "APPROVED",
+    "office": "All Offices",
+    "counter": "All Counters",
+    "createdAt": "2026-10-10T04:38:59.051Z",
+    "expiresAt": "2026-10-11T04:38:59.051Z"
+  },
+  "8327f0ebe56ee5de54e5833668a48fbb2c6ae753e8f653327f3113a23e52562f": {
+    "token": "8327f0ebe56ee5de54e5833668a48fbb2c6ae753e8f653327f3113a23e52562f",
+    "userId": "USR-139085",
+    "username": "officer_test_1791607139053",
+    "name": "Vikram Sarabhai",
+    "role": "officer",
+    "status": "APPROVED",
+    "office": "Rajkot District Service Center",
+    "counter": "Counter 2",
+    "createdAt": "2026-10-10T04:38:59.156Z",
+    "expiresAt": "2026-10-11T04:38:59.156Z"
+  },
+  "987a5e169ecd9d31dcfaaf049aeb63fe6cb2e7543a3c2945d6eae3c0bacb023d": {
+    "token": "987a5e169ecd9d31dcfaaf049aeb63fe6cb2e7543a3c2945d6eae3c0bacb023d",
+    "userId": "USR-ADMIN-01",
+    "username": "admin",
+    "name": "System Administrator",
+    "role": "admin",
+    "status": "APPROVED",
+    "office": "All Offices",
+    "counter": "All Counters",
+    "createdAt": "2026-10-10T04:39:55.458Z",
+    "expiresAt": "2026-10-11T04:39:55.458Z"
+  },
+  "47c280807e7989b2c9d65d298edeb1a0de56b03665c77cd1ad05077b45317eff": {
+    "token": "47c280807e7989b2c9d65d298edeb1a0de56b03665c77cd1ad05077b45317eff",
+    "userId": "USR-195490",
+    "username": "officer_test_1791607195461",
+    "name": "Vikram Sarabhai",
+    "role": "officer",
+    "status": "APPROVED",
+    "office": "Rajkot District Service Center",
+    "counter": "Counter 2",
+    "createdAt": "2026-10-10T04:39:55.560Z",
+    "expiresAt": "2026-10-11T04:39:55.560Z"
+  },
+  "d5cb893015ec69c2e74fec145aebeaebdfc0b40865bd5be04a8175371a85b91b": {
+    "token": "d5cb893015ec69c2e74fec145aebeaebdfc0b40865bd5be04a8175371a85b91b",
+    "userId": "USR-195490",
+    "username": "officer_test_1791607195461",
+    "name": "Vikram Sarabhai",
+    "role": "officer",
+    "status": "APPROVED",
+    "office": "Rajkot District Service Center",
+    "counter": "Counter 2",
+    "createdAt": "2026-10-10T04:39:57.233Z",
+    "expiresAt": "2026-10-11T04:39:57.233Z"
+  }
+}

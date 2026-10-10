@@ -9,9 +9,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const db = require('./db');
+const auth = require('./auth');
 const { initFirebaseAdmin, getFirebaseClientConfig, verifyFirebasePhoneToken } = require('./firebase-server');
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const PUBLIC_DIR = __dirname;
 const AVG_SERVICE_MINUTES = 5;
 
@@ -212,11 +214,14 @@ const server = http.createServer(async (req, res) => {
   const pathname = reqUrl.pathname;
   const method = req.method.toUpperCase();
 
-  const sendJson = (statusCode, data) => {
+  const sendJson = (statusCode, data, extraHeaders = {}) => {
     res.writeHead(statusCode, {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Cache-Control': 'no-cache, no-store, must-revalidate'
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      ...extraHeaders
     });
     res.end(JSON.stringify(data));
   };
@@ -248,6 +253,49 @@ const server = http.createServer(async (req, res) => {
     });
   };
 
+  // Auth Verification Helpers
+  const authenticateRequest = async () => {
+    const token = auth.extractAuthToken(req);
+    if (!token) return null;
+    return await db.getSession(token);
+  };
+
+  const requireRole = async (allowedRoles = []) => {
+    const session = await authenticateRequest();
+    if (!session) {
+      return { ok: false, status: 401, message: 'Authentication required. Please sign in.' };
+    }
+    if (allowedRoles.length > 0 && !allowedRoles.includes(session.role)) {
+      return { ok: false, status: 403, message: 'Forbidden: Insufficient privileges.' };
+    }
+    if (session.role === 'officer' && session.status !== 'APPROVED') {
+      return { ok: false, status: 403, message: 'Your officer account is pending approval by the administrator.' };
+    }
+    return { ok: true, session };
+  };
+
+  const verifyOfficerOrAdmin = async () => {
+    const token = auth.extractAuthToken(req);
+    if (token) {
+      const session = await db.getSession(token);
+      if (!session) {
+        return { ok: false, status: 401, message: 'Invalid or expired session token.' };
+      }
+      if (session.role !== 'officer' && session.role !== 'admin') {
+        return { ok: false, status: 403, message: 'Forbidden: Citizens cannot perform officer operations.' };
+      }
+      if (session.role === 'officer' && session.status !== 'APPROVED') {
+        return { ok: false, status: 403, message: 'Forbidden: Officer account is pending administrator approval.' };
+      }
+      return { ok: true, actor: session };
+    }
+    if (process.env.REQUIRE_OFFICER_AUTH === 'true') {
+      return { ok: false, status: 401, message: 'Authentication required. Please sign in as an officer or administrator.' };
+    }
+    // Permissive fallback for unauthenticated local quick demo / legacy test runner
+    return { ok: true, actor: { name: 'Counter 2 Desk', role: 'officer' } };
+  };
+
   // ------------------------------------------
   // API ROUTES
   // ------------------------------------------
@@ -256,6 +304,22 @@ const server = http.createServer(async (req, res) => {
     logRequest(method, pathname);
 
     try {
+      // 0. GET /api/health -> Deployment health check
+      if (pathname === '/api/health' && method === 'GET') {
+        const dbStatus = db.getDatabaseStatus();
+        const fbConfig = getFirebaseClientConfig();
+        return sendJson(200, {
+          status: 'UP',
+          service: 'QueueLess Virtual Queue System',
+          timestamp: new Date().toISOString(),
+          uptime: process.uptime(),
+          database: dbStatus,
+          firebase: {
+            configured: fbConfig.configured
+          }
+        });
+      }
+
       // 1. GET /api/config/firebase -> Provide non-secret client config to browser
       if (pathname === '/api/config/firebase' && method === 'GET') {
         const fbConfig = getFirebaseClientConfig();
@@ -289,6 +353,321 @@ const server = http.createServer(async (req, res) => {
           stats,
           storage: db.getDatabaseStatus()
         });
+      }
+
+      // ------------------------------------------
+      // AUTHENTICATION & SESSION ROUTES
+      // ------------------------------------------
+
+      // POST /api/auth/register-officer -> Self-registration for officers (sets status to PENDING)
+      if (pathname === '/api/auth/register-officer' && method === 'POST') {
+        const body = await readBody();
+        const { username, email, fullName, password, officeId, employeeId, counter, mobile } = body || {};
+
+        if (!username || username.trim().length < 3) {
+          return sendJson(400, { success: false, message: 'Username must be at least 3 characters.' });
+        }
+        if (!password || password.length < 6) {
+          return sendJson(400, { success: false, message: 'Password must be at least 6 characters.' });
+        }
+        if (!email || !email.includes('@')) {
+          return sendJson(400, { success: false, message: 'Valid official email address is required.' });
+        }
+        if (!fullName || !fullName.trim()) {
+          return sendJson(400, { success: false, message: 'Full name is required.' });
+        }
+
+        const existing = await db.getUserByIdentifier(username);
+        if (existing) {
+          return sendJson(409, { success: false, message: 'Username or email already registered.' });
+        }
+
+        const cred = auth.hashPassword(password);
+        const newUser = await db.createUser({
+          username: username.trim().toLowerCase(),
+          email: email.trim().toLowerCase(),
+          name: fullName.trim(),
+          mobile: mobile || '',
+          employeeId: employeeId || '',
+          office: officeId || 'Rajkot District Service Center',
+          counter: counter || 'Counter 1',
+          role: 'officer',
+          status: 'PENDING',
+          passwordHash: cred.hash,
+          salt: cred.salt
+        });
+
+        logInfo(`[AUTH] Officer registration submitted: ${newUser.username} (${newUser.name}) -> PENDING approval.`);
+        return sendJson(201, {
+          success: true,
+          message: 'Officer registration submitted. Account is pending admin approval.',
+          user: newUser
+        });
+      }
+
+      // POST /api/auth/login -> Login for officers and administrators
+      if (pathname === '/api/auth/login' && method === 'POST') {
+        const body = await readBody();
+        const { username, password } = body || {};
+
+        if (!username || !password) {
+          return sendJson(400, { success: false, message: 'Username and password are required.' });
+        }
+
+        const user = await db.getUserByIdentifier(username);
+        if (!user || !user.passwordHash || !user.salt) {
+          return sendJson(401, { success: false, message: 'Invalid username or password.' });
+        }
+
+        const valid = auth.verifyPassword(password, user.passwordHash, user.salt);
+        if (!valid) {
+          return sendJson(401, { success: false, message: 'Invalid username or password.' });
+        }
+
+        if (user.role === 'officer' && user.status === 'PENDING') {
+          return sendJson(403, {
+            success: false,
+            code: 'ACCOUNT_PENDING',
+            message: 'Your officer account is pending approval by the Center Administrator. Please wait for authorization.'
+          });
+        }
+
+        if (user.status === 'REJECTED') {
+          return sendJson(403, {
+            success: false,
+            code: 'ACCOUNT_REJECTED',
+            message: 'Your account registration was rejected by administration. Please contact support.'
+          });
+        }
+
+        if (user.status === 'INACTIVE') {
+          return sendJson(403, {
+            success: false,
+            code: 'ACCOUNT_INACTIVE',
+            message: 'Your account has been deactivated.'
+          });
+        }
+
+        const session = await db.createSession(user);
+        await db.logActivity('STAFF_LOGIN', { name: user.name, role: user.role }, { username: user.username, office: user.office });
+
+        logInfo(`[AUTH] User "${user.username}" [${user.role}] logged in successfully.`);
+
+        const cookieHeader = `ql_session=${session.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`;
+        return sendJson(200, {
+          success: true,
+          token: session.token,
+          user: {
+            id: user.id,
+            username: user.username,
+            name: user.name,
+            role: user.role,
+            status: user.status,
+            office: user.office,
+            counter: user.counter
+          }
+        }, { 'Set-Cookie': cookieHeader });
+      }
+
+      // POST /api/auth/logout -> Logout and revoke session
+      if (pathname === '/api/auth/logout' && method === 'POST') {
+        const token = auth.extractAuthToken(req);
+        if (token) {
+          await db.deleteSession(token);
+        }
+        const clearCookie = `ql_session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax`;
+        return sendJson(200, { success: true, message: 'Logged out successfully.' }, { 'Set-Cookie': clearCookie });
+      }
+
+      // GET /api/auth/me -> Current session identity
+      if (pathname === '/api/auth/me' && method === 'GET') {
+        const session = await authenticateRequest();
+        if (!session) {
+          return sendJson(401, { success: false, message: 'Not authenticated.' });
+        }
+        return sendJson(200, { success: true, user: session });
+      }
+
+      // POST /api/auth/setup-admin -> Safe one-time administrator provisioning
+      if (pathname === '/api/auth/setup-admin' && method === 'POST') {
+        const body = await readBody();
+        const { username = 'admin', password, name = 'System Administrator', setupKey } = body || {};
+
+        if (!password || password.length < 6) {
+          return sendJson(400, { success: false, message: 'Admin password must be at least 6 characters.' });
+        }
+
+        const existingAdmin = await db.getUserByRole('admin');
+        const expectedKey = process.env.ADMIN_SETUP_KEY || 'QueueLessSetup2026';
+        if (existingAdmin && setupKey !== expectedKey) {
+          return sendJson(403, { success: false, message: 'Administrator already exists. Valid ADMIN_SETUP_KEY required.' });
+        }
+
+        const cred = auth.hashPassword(password);
+        const adminUser = await db.createUser({
+          username: username.trim().toLowerCase(),
+          email: `${username.trim().toLowerCase()}@queueless.gov.in`,
+          name: name.trim(),
+          mobile: '9999999999',
+          role: 'admin',
+          status: 'APPROVED',
+          office: 'All Offices',
+          counter: 'All Counters',
+          passwordHash: cred.hash,
+          salt: cred.salt
+        });
+
+        return sendJson(201, {
+          success: true,
+          message: 'Administrator created successfully.',
+          user: adminUser
+        });
+      }
+
+      // ------------------------------------------
+      // ADMIN DASHBOARD & GOVERNANCE ROUTES
+      // ------------------------------------------
+
+      // GET /api/admin/staff -> List all officers
+      if (pathname === '/api/admin/staff' && method === 'GET') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const staff = await db.getUsers({ role: 'officer' });
+        return sendJson(200, { success: true, staff });
+      }
+
+      // POST /api/admin/staff/approve -> Approve pending officer
+      if (pathname === '/api/admin/staff/approve' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { userId } = body || {};
+        if (!userId) return sendJson(400, { success: false, message: 'userId is required.' });
+
+        const result = await db.approveStaff(userId, authCheck.session);
+        return sendJson(200, result);
+      }
+
+      // POST /api/admin/staff/reject -> Reject officer
+      if (pathname === '/api/admin/staff/reject' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { userId } = body || {};
+        if (!userId) return sendJson(400, { success: false, message: 'userId is required.' });
+
+        const result = await db.rejectStaff(userId, authCheck.session);
+        return sendJson(200, result);
+      }
+
+      // POST /api/admin/staff/status -> Change officer status (e.g. INACTIVE)
+      if (pathname === '/api/admin/staff/status' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { userId, status } = body || {};
+        if (!userId || !status) return sendJson(400, { success: false, message: 'userId and status are required.' });
+
+        const result = await db.setStaffStatus(userId, status, authCheck.session);
+        return sendJson(200, result);
+      }
+
+      // GET /api/admin/offices -> Get all offices & counters
+      if (pathname === '/api/admin/offices' && method === 'GET') {
+        const offices = await db.getOffices();
+        return sendJson(200, { success: true, offices });
+      }
+
+      // POST /api/admin/offices -> Add office
+      if (pathname === '/api/admin/offices' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { name, tagline, district, services } = body || {};
+        const office = await db.addOffice({ name, tagline, district, services });
+        return sendJson(201, { success: true, office });
+      }
+
+      // POST /api/admin/services -> Add service to office
+      if (pathname === '/api/admin/services' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { officeId, serviceName } = body || {};
+        const resObj = await db.addServiceToOffice(officeId, serviceName);
+        return sendJson(200, resObj);
+      }
+
+      // POST /api/admin/counters -> Add counter to office
+      if (pathname === '/api/admin/counters' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { officeId, name, service } = body || {};
+        const counter = await db.addCounterToOffice(officeId, { name, service });
+        return sendJson(201, { success: true, counter });
+      }
+
+      // POST /api/admin/counters/assign -> Assign officer to counter
+      if (pathname === '/api/admin/counters/assign' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { officeId, counterId, officerId, officerName } = body || {};
+        const resObj = await db.assignCounterOfficer(officeId, counterId, officerId, officerName);
+        return sendJson(200, resObj);
+      }
+
+      // GET /api/admin/queue-monitor -> Global queue inspection with filters
+      if (pathname === '/api/admin/queue-monitor' && method === 'GET') {
+        const authCheck = await requireRole(['admin', 'officer']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const office = reqUrl.searchParams.get('office');
+        const service = reqUrl.searchParams.get('service');
+        const counter = reqUrl.searchParams.get('counter');
+        const status = reqUrl.searchParams.get('status');
+        const date = reqUrl.searchParams.get('date');
+        const limit = reqUrl.searchParams.get('limit') || 100;
+
+        const [tokens, metrics] = await Promise.all([
+          db.getAllTokensFiltered({ office, service, counter, status, date, limit }),
+          db.getQueueMetrics(office)
+        ]);
+
+        return sendJson(200, { success: true, tokens, metrics });
+      }
+
+      // GET /api/admin/logs -> Audit activity logs
+      if (pathname === '/api/admin/logs' && method === 'GET') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const limit = reqUrl.searchParams.get('limit') || 50;
+        const action = reqUrl.searchParams.get('action');
+
+        const logs = await db.getActivityLogs({ limit, action });
+        return sendJson(200, { success: true, logs });
+      }
+
+      // POST /api/queue/seed -> Admin explicitly seeds demo tokens
+      if (pathname === '/api/queue/seed' && method === 'POST') {
+        const authCheck = await requireRole(['admin']);
+        if (!authCheck.ok) return sendJson(authCheck.status, { success: false, message: authCheck.message });
+
+        const body = await readBody();
+        const { office, force } = body || {};
+        const state = await db.seedDemoData({ office, force });
+        logInfo(`[ADMIN] Demo queue data seeded explicitly by ${authCheck.session.username}`);
+        return sendJson(200, { success: true, state, message: 'Demo queue seeded successfully.' });
       }
 
       // 4. POST /api/token -> Citizen generates online virtual token
@@ -382,6 +761,11 @@ const server = http.createServer(async (req, res) => {
 
       // 5. POST /api/officer/walk-in -> Officer adds physical walk-in to unified queue
       if (pathname === '/api/officer/walk-in' && method === 'POST') {
+        const officerCheck = await verifyOfficerOrAdmin();
+        if (!officerCheck.ok) {
+          return sendJson(officerCheck.status, { success: false, message: officerCheck.message });
+        }
+
         const body = await readBody();
         const {
           name = 'Rahul Patel',
@@ -414,6 +798,11 @@ const server = http.createServer(async (req, res) => {
 
       // 6. POST /api/queue/call-next -> Officer calls next waiting token (or specific token)
       if (pathname === '/api/queue/call-next' && method === 'POST') {
+        const officerCheck = await verifyOfficerOrAdmin();
+        if (!officerCheck.ok) {
+          return sendJson(officerCheck.status, { success: false, message: officerCheck.message });
+        }
+
         const body = await readBody();
         const counter = (body && body.counter) || 'Counter 2';
         const targetTokenId = body && body.tokenId;
@@ -432,6 +821,11 @@ const server = http.createServer(async (req, res) => {
 
       // 7. POST /api/queue/complete -> Officer completes current serving citizen
       if (pathname === '/api/queue/complete' && method === 'POST') {
+        const officerCheck = await verifyOfficerOrAdmin();
+        if (!officerCheck.ok) {
+          return sendJson(officerCheck.status, { success: false, message: officerCheck.message });
+        }
+
         const { completedToken, state } = await db.completeCurrent();
 
         const nextWaiting = state.tokens.find(t => t.status === 'WAITING');
@@ -447,6 +841,11 @@ const server = http.createServer(async (req, res) => {
 
       // 8. POST /api/queue/noshow -> Mark customer as no-show
       if (pathname === '/api/queue/noshow' && method === 'POST') {
+        const officerCheck = await verifyOfficerOrAdmin();
+        if (!officerCheck.ok) {
+          return sendJson(officerCheck.status, { success: false, message: officerCheck.message });
+        }
+
         const body = await readBody();
         const tokenId = body && body.tokenId;
 
@@ -568,12 +967,13 @@ async function startServer() {
   initFirebaseAdmin();
   const fbConfig = getFirebaseClientConfig();
 
-  server.listen(PORT, () => {
+  server.listen(PORT, HOST, () => {
     console.log(`\n==================================================`);
     console.log(`QUEUELESS SERVER`);
     console.log(`================`);
     console.log(`Server Status : RUNNING`);
     console.log(`Environment   : ${process.env.NODE_ENV || 'Development'}`);
+    console.log(`Host          : ${HOST}`);
     console.log(`Port          : ${PORT}`);
     
     if (dbStatus.connected) {

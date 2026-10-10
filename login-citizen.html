@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Services Portal — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Citizen Services Portal</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link active">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link">Desk Console</a></li>
+      <li><a href="login-officer.html" class="nav-link">Officer Login</a></li>
+      <li><a href="admin.html" class="nav-link">Admin</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div class="auth-container" style="max-width: 520px;">
+      <div class="auth-card">
+        
+        <div class="auth-header">
+          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">🇮🇳</div>
+          <h1>Citizen Virtual Token Services</h1>
+          <p>Government of Gujarat &bull; Jan Seva Kendra Remote Services</p>
+        </div>
+
+        <div class="alert-box alert-info" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
+          💡 <strong>Skip the physical queue:</strong> Join the virtual queue remotely via genuine SMS OTP verification, monitor live counter calls from anywhere, or book an advance appointment slot.
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <a href="citizen.html" class="btn btn-primary btn-lg" style="text-align: center; text-decoration: none; padding: 1rem;">
+            🎫 Get Virtual Queue Token (Instant SMS OTP)
+          </a>
+
+          <a href="appointment.html" class="btn btn-secondary btn-lg" style="text-align: center; text-decoration: none; padding: 0.85rem;">
+            📅 Schedule Advance Appointment
+          </a>
+        </div>
+
+        <!-- Token Lookup / Status Checker -->
+        <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px dashed var(--border-subtle);">
+          <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+            Track Your Active Token
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Enter your token number (e.g., A-41) to check live position and estimated arrival time:
+          </p>
+
+          <form onsubmit="handleTrackToken(event)" style="display: flex; gap: 0.5rem;">
+            <input type="text" id="trackTokenInput" class="form-control" placeholder="e.g. A-41" style="text-transform: uppercase;" required>
+            <button type="submit" class="btn btn-primary btn-sm">Check Status</button>
+          </form>
+
+          <div id="trackResult" style="margin-top: 1rem; display: none;"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>QueueLess &bull; Built for Hackathon PS-02: Virtual Queue &amp; Appointment Management</div>
+  </footer>
+
+  <script src="js/queue.js"></script>
+  <script>
+    async function handleTrackToken(e) {
+      e.preventDefault();
+      const tokenId = document.getElementById('trackTokenInput').value.trim().toUpperCase();
+      const resultDiv = document.getElementById('trackResult');
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-dim);">Checking queue records...</div>';
+
+      try {
+        await QueueEngine.fetchState();
+        const metrics = QueueEngine.getTokenMetrics(tokenId);
+
+        if (!metrics) {
+          resultDiv.innerHTML = `
+            <div class="alert-box alert-warning" style="margin: 0;">
+              Token <strong>${tokenId}</strong> was not found in the active queue. It may already be completed or cancelled.
+            </div>
+          `;
+          return;
+        }
+
+        const isServing = metrics.status === 'SERVING';
+        resultDiv.innerHTML = `
+          <div class="card" style="padding: 1rem; border: 1px solid var(--border-medium); margin: 0; background: #f8fafc;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span class="token-cell" style="font-size: 1.25rem;">${metrics.token.id}</span>
+              <span class="badge ${isServing ? 'badge-serving' : 'badge-waiting'}">${metrics.status}</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              <strong>Service:</strong> ${metrics.token.service}<br>
+              <strong>Position:</strong> ${isServing ? 'At Desk Now' : `${metrics.peopleAhead} person(s) ahead`}<br>
+              <strong>Estimate:</strong> ${isServing ? 'Immediate' : `~${metrics.estimatedMinutes} minutes`}<br>
+              <div style="margin-top: 0.5rem; font-weight: 600; color: var(--blue-700);">${metrics.arrivalWindow}</div>
+            </div>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <a href="citizen.html" class="btn btn-secondary btn-sm" style="text-decoration: none;">View Live Tracking Screen &rarr;</a>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="alert-box alert-danger">Error fetching status: ${err.message}</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

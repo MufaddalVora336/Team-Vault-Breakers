@@ -24,12 +24,19 @@
     <ul class="nav-links">
       <li><a href="index.html" class="nav-link">Home</a></li>
       <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
-      <li><a href="officer.html" class="nav-link active">Officer Login</a></li>
-      <li><a href="appointment.html" class="nav-link">Appointments</a></li>
+      <li><a href="officer.html" class="nav-link active">Desk Console</a></li>
+      <li><a href="login-officer.html" class="nav-link">Staff Login</a></li>
+      <li><a href="admin.html" class="nav-link">Admin</a></li>
       <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
     </ul>
 
-    <div class="nav-actions">
+    <div class="nav-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+      <span id="officerNavbarName" style="color: #ffffff; font-size: 0.82rem; font-weight: 600; background: rgba(255,255,255,0.12); padding: 0.25rem 0.6rem; border-radius: var(--radius-xs);">
+        Counter 2 Officer
+      </span>
+      <button id="btnOfficerLogout" class="btn btn-secondary btn-sm" style="display: none; padding: 0.25rem 0.55rem; font-size: 0.78rem;" onclick="handleOfficerLogout()">
+        Sign Out
+      </button>
       <a href="demo-split.html" class="btn-demo-badge">
         <span class="pulse-dot"></span>
         <span>Demo Runner</span>

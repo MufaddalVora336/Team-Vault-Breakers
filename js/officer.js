@@ -315,4 +315,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial render
   renderOfficerDashboard();
+
+  // Officer Session Check
+  async function checkOfficerSession() {
+    try {
+      const token = QueueEngine.getAuthToken();
+      if (!token) return;
+      const res = await fetch('/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          const navName = document.getElementById('officerNavbarName');
+          const btnLogout = document.getElementById('btnOfficerLogout');
+          if (navName) navName.textContent = `${data.user.name || data.user.username} (${data.user.counter || 'Desk'})`;
+          if (btnLogout) btnLogout.style.display = 'inline-block';
+        }
+      }
+    } catch (e) {}
+  }
+  checkOfficerSession();
+
+  window.handleOfficerLogout = async function() {
+    try {
+      const token = QueueEngine.getAuthToken();
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+    } catch (e) {}
+    QueueEngine.clearAuthToken();
+    localStorage.removeItem('queueless_user');
+    window.location.href = 'login-officer.html';
+  };
 });

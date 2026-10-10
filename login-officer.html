@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Officer Portal Login — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Officer Staff Portal</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link">Desk Console</a></li>
+      <li><a href="login-officer.html" class="nav-link active">Officer Login</a></li>
+      <li><a href="login-admin.html" class="nav-link">Admin</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div class="auth-container">
+      <div class="auth-card">
+        
+        <div class="auth-header">
+          <div style="font-size: 2rem; margin-bottom: 0.35rem;">🏛️</div>
+          <h1>Officer Access Portal</h1>
+          <p>Jan Seva Kendra &bull; Desk Management Authentication</p>
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="auth-tabs">
+          <button id="tabBtnLogin" class="auth-tab-btn active" onclick="switchTab('login')">Sign In</button>
+          <button id="tabBtnRegister" class="auth-tab-btn" onclick="switchTab('register')">New Staff Registration</button>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="authAlert" class="alert-box" style="display: none;"></div>
+
+        <!-- TAB 1: LOGIN FORM -->
+        <form id="officerLoginForm" onsubmit="handleOfficerLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginUsername">Username or Email</label>
+            <input type="text" id="loginUsername" class="form-control" placeholder="e.g. officer1" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            Sign In to Desk Console
+          </button>
+
+          <!-- Demo Quick Logins for Hackathon Jurors -->
+          <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--border-subtle);">
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem;">
+              ⚡ Quick Demo Credentials:
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('officer1', 'officer123')">
+                Approved: officer1
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('sneha_patel', 'staff123')">
+                Pending: sneha_patel
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- TAB 2: REGISTRATION FORM -->
+        <form id="officerRegisterForm" style="display: none;" onsubmit="handleOfficerRegister(event)">
+          <div class="form-group">
+            <label class="form-label" for="regFullName">Full Name</label>
+            <input type="text" id="regFullName" class="form-control" placeholder="e.g. Rajesh Trivedi" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regEmail">Official Email</label>
+            <input type="email" id="regEmail" class="form-control" placeholder="e.g. rajesh.t@queueless.gov.in" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regUsername">Username</label>
+            <input type="text" id="regUsername" class="form-control" placeholder="e.g. rajesh_trivedi" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regPassword">Password <span class="hint">(Min. 6 chars)</span></label>
+            <input type="password" id="regPassword" class="form-control" placeholder="Create secure password" minlength="6" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="regOffice">Assigned Seva Kendra</label>
+            <select id="regOffice" class="form-control">
+              <option value="Rajkot District Service Center">Rajkot District Service Center</option>
+              <option value="Ahmedabad Civic Center (East Zone)">Ahmedabad Civic Center (East Zone)</option>
+              <option value="Surat Municipal Seva Kendra">Surat Municipal Seva Kendra</option>
+              <option value="Vadodara Jan Seva Kendra">Vadodara Jan Seva Kendra</option>
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label" for="regCounter">Counter</label>
+              <input type="text" id="regCounter" class="form-control" placeholder="e.g. Counter 2" value="Counter 2">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regEmployeeId">Employee ID</label>
+              <input type="text" id="regEmployeeId" class="form-control" placeholder="e.g. GOV-8821">
+            </div>
+          </div>
+
+          <div class="alert-box alert-warning" style="font-size: 0.8rem; margin: 0.75rem 0 1rem;">
+            ℹ️ <strong>Governance Note:</strong> New registrations require administrative approval. Your account will be created with <strong>PENDING</strong> status until verified by the Center Administrator.
+          </div>
+
+          <button type="submit" id="btnRegSubmit" class="btn btn-primary" style="width: 100%;">
+            Submit Staff Registration
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>QueueLess &bull; Citizen Virtual Queue &amp; Public Seva Management</div>
+  </footer>
+
+  <script src="js/queue.js"></script>
+  <script>
+    function switchTab(tab) {
+      const loginForm = document.getElementById('officerLoginForm');
+      const regForm = document.getElementById('officerRegisterForm');
+      const tabLogin = document.getElementById('tabBtnLogin');
+      const tabReg = document.getElementById('tabBtnRegister');
+      const alertBox = document.getElementById('authAlert');
+      alertBox.style.display = 'none';
+
+      if (tab === 'login') {
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+        tabLogin.classList.add('active');
+        tabReg.classList.remove('active');
+      } else {
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+        tabLogin.classList.remove('active');
+        tabReg.classList.add('active');
+      }
+    }
+
+    function showAlert(msg, type = 'danger') {
+      const alertBox = document.getElementById('authAlert');
+      alertBox.className = `alert-box alert-${type}`;
+      alertBox.innerHTML = msg;
+      alertBox.style.display = 'block';
+    }
+
+    function quickFill(user, pass) {
+      document.getElementById('loginUsername').value = user;
+      document.getElementById('loginPassword').value = pass;
+    }
+
+    async function handleOfficerLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnLoginSubmit');
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          if (data.code === 'ACCOUNT_PENDING') {
+            showAlert(`⏳ <strong>Approval Required:</strong> ${data.message}`, 'warning');
+          } else {
+            showAlert(`❌ ${data.message || 'Login failed. Please check credentials.'}`, 'danger');
+          }
+          btn.disabled = false;
+          btn.textContent = 'Sign In to Desk Console';
+          return;
+        }
+
+        QueueEngine.setAuthToken(data.token);
+        localStorage.setItem('queueless_user', JSON.stringify(data.user));
+
+        showAlert('✅ Login successful! Redirecting to Desk Console...', 'success');
+        setTimeout(() => {
+          window.location.href = 'officer.html';
+        }, 800);
+      } catch (err) {
+        showAlert('Network error: ' + err.message, 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Sign In to Desk Console';
+      }
+    }
+
+    async function handleOfficerRegister(e) {
+      e.preventDefault();
+      const fullName = document.getElementById('regFullName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const officeId = document.getElementById('regOffice').value;
+      const counter = document.getElementById('regCounter').value.trim();
+      const employeeId = document.getElementById('regEmployeeId').value.trim();
+      const btn = document.getElementById('btnRegSubmit');
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      try {
+        const res = await fetch('/api/auth/register-officer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName,
+            email,
+            username,
+            password,
+            officeId,
+            counter,
+            employeeId
+          })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          showAlert(`❌ ${data.message || 'Registration failed.'}`, 'danger');
+          btn.disabled = false;
+          btn.textContent = 'Submit Staff Registration';
+          return;
+        }
+
+        showAlert(
+          `✅ <strong>Registration Submitted!</strong><br>${data.message}<br><br>` +
+          `An Administrator must approve account "<strong>${username}</strong>" in the Admin Dashboard before you can sign in.`,
+          'success'
+        );
+        document.getElementById('officerRegisterForm').reset();
+        btn.disabled = false;
+        btn.textContent = 'Submit Staff Registration';
+      } catch (err) {
+        showAlert('Network error: ' + err.message, 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Submit Staff Registration';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+[
+  {
+    "id": "OFF-01",
+    "name": "Rajkot District Service Center",
+    "tagline": "Jan Seva Kendra",
+    "district": "Rajkot",
+    "services": [
+      "Income Certificate",
+      "Residence Certificate",
+      "Birth Certificate",
+      "Caste Certificate",
+      "Land Records & RoR (7/12)"
+    ],
+    "counters": [
+      {
+        "id": "C-01",
+        "name": "Counter 1",
+        "service": "Revenue Services",
+        "officerId": null,
+        "officerName": "Standby"
+      },
+      {
+        "id": "C-02",
+        "name": "Counter 2",
+        "service": "Certificates & Jan Seva",
+        "officerId": "USR-OFFICER-01",
+        "officerName": "Prakash Varma"
+      },
+      {
+        "id": "C-03",
+        "name": "Counter 3",
+        "service": "Land & RoR",
+        "officerId": null,
+        "officerName": "Standby"
+      },
+      {
+        "id": "C-04",
+        "name": "Counter 4",
+        "service": "General Inquiries",
+        "officerId": null,
+        "officerName": "Standby"
+      }
+    ]
+  },
+  {
+    "id": "OFF-02",
+    "name": "Ahmedabad Civic Center (East Zone)",
+    "tagline": "East Zone Seva Kendra",
+    "district": "Ahmedabad",
+    "services": [
+      "Income Certificate",
+      "Birth Certificate",
+      "Caste Certificate"
+    ],
+    "counters": [
+      {
+        "id": "C-05",
+        "name": "Counter 1",
+        "service": "Civic Certificates",
+        "officerId": null,
+        "officerName": "Standby"
+      },
+      {
+        "id": "C-06",
+        "name": "Counter 2",
+        "service": "Revenue Desk",
+        "officerId": null,
+        "officerName": "Standby"
+      }
+    ]
+  },
+  {
+    "id": "OFF-03",
+    "name": "Surat Jan Seva Kendra",
+    "tagline": "City Civic Center",
+    "district": "Surat",
+    "services": [
+      "Income Certificate",
+      "Residence Certificate",
+      "Birth Certificate"
+    ],
+    "counters": [
+      {
+        "id": "C-07",
+        "name": "Counter 1",
+        "service": "General Services",
+        "officerId": null,
+        "officerName": "Standby"
+      }
+    ]
+  },
+  {
+    "id": "OFF-04",
+    "name": "Vadodara Collectorate Office",
+    "tagline": "Collectorate Jan Seva",
+    "district": "Vadodara",
+    "services": [
+      "Income Certificate",
+      "Caste Certificate",
+      "Land Records & RoR (7/12)"
+    ],
+    "counters": [
+      {
+        "id": "C-08",
+        "name": "Counter 1",
+        "service": "Revenue & Land",
+        "officerId": null,
+        "officerName": "Standby"
+      }
+    ]
+  },
+  {
+    "id": "OFF-7242",
+    "name": "Bhavnagar District Seva Kendra",
+    "tagline": "Civic Seva Bhavan",
+    "district": "Bhavnagar",
+    "services": [
+      "Income Certificate",
+      "Residence Certificate"
+    ],
+    "counters": [
+      {
+        "id": "C-OFF-7242-01",
+        "name": "Counter 1",
+        "service": "General Inquiries",
+        "officerId": null,
+        "officerName": "Standby"
+      }
+    ]
+  }
+]

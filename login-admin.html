@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Center Administration Login — QueueLess</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">QL</div>
+      <div>
+        <span class="brand-title">QueueLess</span>
+        <span class="brand-tagline">Center Administration Portal</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="citizen.html" class="nav-link">Citizen Portal</a></li>
+      <li><a href="officer.html" class="nav-link">Desk Console</a></li>
+      <li><a href="login-officer.html" class="nav-link">Officer Login</a></li>
+      <li><a href="admin.html" class="nav-link active">Admin Dashboard</a></li>
+      <li><a href="demo-split.html" class="nav-link" style="color: var(--blue-400);">Dual-Screen Demo</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="demo-split.html" class="btn-demo-badge">
+        <span class="pulse-dot"></span>
+        <span>Demo Runner</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <div class="auth-container">
+      <div class="auth-card">
+        
+        <div class="auth-header">
+          <div style="font-size: 2rem; margin-bottom: 0.35rem;">🛡️</div>
+          <h1>System Administration</h1>
+          <p>Public Service Center &bull; Governance &amp; Queue Control</p>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="authAlert" class="alert-box" style="display: none;"></div>
+
+        <!-- ADMIN LOGIN FORM -->
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="loginUsername">Admin Username</label>
+            <input type="text" id="loginUsername" class="form-control" placeholder="admin" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+            Authenticate as Administrator
+          </button>
+
+          <!-- Quick Demo Fill -->
+          <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase;">
+                Default Credentials:
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); font-family: monospace;">
+                admin / Admin@1234
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="quickFill('admin', 'Admin@1234')">
+              Auto-Fill
+            </button>
+          </div>
+
+          <div style="margin-top: 1rem; text-align: center;">
+            <button type="button" style="background: none; border: none; color: var(--blue-700); font-size: 0.82rem; cursor: pointer; text-decoration: underline;" onclick="toggleSetupModal(true)">
+              First-time setup / provision new admin account
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ONE-TIME SETUP MODAL -->
+    <div id="setupModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
+      <div style="background: #ffffff; border-radius: var(--radius-md); max-width: 440px; width: 100%; padding: 1.75rem; box-shadow: var(--shadow-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h2 style="font-size: 1.15rem; font-weight: 700;">Provision Admin Account</h2>
+          <button type="button" onclick="toggleSetupModal(false)" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">&times;</button>
+        </div>
+
+        <div id="modalAlert" class="alert-box" style="display: none;"></div>
+
+        <form onsubmit="handleAdminSetup(event)">
+          <div class="form-group">
+            <label class="form-label">Admin Full Name</label>
+            <input type="text" id="setupName" class="form-control" placeholder="District Center Director" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" id="setupUsername" class="form-control" placeholder="admin" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password (Min. 6 chars)</label>
+            <input type="password" id="setupPassword" class="form-control" placeholder="New master password" minlength="6" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Setup Security Key</label>
+            <input type="password" id="setupKey" class="form-control" placeholder="QueueLessSetup2026" value="QueueLessSetup2026">
+          </div>
+          <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSetupModal(false)">Cancel</button>
+            <button type="submit" id="btnSetupSubmit" class="btn btn-primary btn-sm">Provision Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div>QueueLess &bull; Secure Civic Administration Engine</div>
+  </footer>
+
+  <script src="js/queue.js"></script>
+  <script>
+    function showAlert(msg, type = 'danger') {
+      const alertBox = document.getElementById('authAlert');
+      alertBox.className = `alert-box alert-${type}`;
+      alertBox.innerHTML = msg;
+      alertBox.style.display = 'block';
+    }
+
+    function quickFill(u, p) {
+      document.getElementById('loginUsername').value = u;
+      document.getElementById('loginPassword').value = p;
+    }
+
+    function toggleSetupModal(show) {
+      const m = document.getElementById('setupModal');
+      m.style.display = show ? 'flex' : 'none';
+      document.getElementById('modalAlert').style.display = 'none';
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnLoginSubmit');
+
+      btn.disabled = true;
+      btn.textContent = 'Authenticating...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          showAlert(`❌ ${data.message || 'Invalid administrator credentials.'}`, 'danger');
+          btn.disabled = false;
+          btn.textContent = 'Authenticate as Administrator';
+          return;
+        }
+
+        if (data.user && data.user.role !== 'admin') {
+          showAlert('❌ Access denied: Account is not an administrator. Please use Officer Login.', 'danger');
+          btn.disabled = false;
+          btn.textContent = 'Authenticate as Administrator';
+          return;
+        }
+
+        QueueEngine.setAuthToken(data.token);
+        localStorage.setItem('queueless_admin_user', JSON.stringify(data.user));
+
+        showAlert('✅ Administrator authenticated! Redirecting to Management Dashboard...', 'success');
+        setTimeout(() => {
+          window.location.href = 'admin.html';
+        }, 750);
+      } catch (err) {
+        showAlert('Network error: ' + err.message, 'danger');
+        btn.disabled = false;
+        btn.textContent = 'Authenticate as Administrator';
+      }
+    }
+
+    async function handleAdminSetup(e) {
+      e.preventDefault();
+      const name = document.getElementById('setupName').value.trim();
+      const username = document.getElementById('setupUsername').value.trim();
+      const password = document.getElementById('setupPassword').value;
+      const setupKey = document.getElementById('setupKey').value.trim();
+      const mAlert = document.getElementById('modalAlert');
+
+      try {
+        const res = await fetch('/api/auth/setup-admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, username, password, setupKey })
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          mAlert.className = 'alert-box alert-danger';
+          mAlert.textContent = data.message || 'Setup failed.';
+          mAlert.style.display = 'block';
+          return;
+        }
+
+        mAlert.className = 'alert-box alert-success';
+        mAlert.textContent = 'Admin created successfully! You can now log in.';
+        mAlert.style.display = 'block';
+        quickFill(username, password);
+        setTimeout(() => toggleSetupModal(false), 1200);
+      } catch (err) {
+        mAlert.className = 'alert-box alert-danger';
+        mAlert.textContent = err.message;
+        mAlert.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
